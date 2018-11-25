@@ -129,6 +129,8 @@ void Game::SetupResources(void){
     // Load material to be applied to skybox
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/skybox");
     resman_.LoadResource(Material, "SkyboxMaterial", filename.c_str());
+
+	Model helicopterTest = Model("C:/Users/Alex/Documents/GitHub/3501-final/gameAssets/helicopter/uh60.obj");
 }
 
 
@@ -146,6 +148,7 @@ void Game::SetupScene(void){
     // Create skybox
     skybox_ = CreateInstance("CubeInstance1", "CubeMesh", "SkyboxMaterial");
     skybox_->Scale(glm::vec3(50.0, 50.0, 50.0));
+
 }
 
 
