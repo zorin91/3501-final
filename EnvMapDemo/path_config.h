@@ -1,0 +1,1 @@
+#define MATERIAL_DIRECTORY "C:\\Users\\Jacob DiDiodato\\Documents\\3501 Final\\3501-final\\EnvMapDemo"
