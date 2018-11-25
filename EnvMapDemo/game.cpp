@@ -5,6 +5,7 @@
 #include "game.h"
 #include "path_config.h"
 
+
 namespace game {
 
 // Some configuration constants
