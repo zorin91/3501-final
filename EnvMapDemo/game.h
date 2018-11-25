@@ -11,7 +11,6 @@
 #include "resource_manager.h"
 #include "camera.h"
 #include "asteroid.h"
-#include "model.h"
 
 namespace game {
 

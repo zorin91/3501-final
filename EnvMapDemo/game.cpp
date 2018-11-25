@@ -4,6 +4,7 @@
 
 #include "game.h"
 #include "path_config.h"
+#include "model.h"
 
 
 namespace game {
