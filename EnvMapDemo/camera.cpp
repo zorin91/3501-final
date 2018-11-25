@@ -60,13 +60,11 @@ glm::vec3 Camera::GetForward(void) const {
     return -current_forward; // Return -forward since the camera coordinate system points in the opposite direction
 }
 
-
 glm::vec3 Camera::GetSide(void) const {
 
     glm::vec3 current_side = orientation_ * side_;
     return current_side;
 }
-
 
 glm::vec3 Camera::GetUp(void) const {
 
@@ -109,6 +107,21 @@ void Camera::Roll(float angle){
     glm::quat rotation = glm::angleAxis(angle, GetForward());
     orientation_ = rotation * orientation_;
     orientation_ = glm::normalize(orientation_);
+}
+
+glm::vec3 Camera::getRoll(void)
+{
+	return glm::normalize(orientation_ * GetForward());
+}
+
+glm::vec3 Camera::getPitch(void)
+{
+	return glm::normalize(orientation_ * GetSide());
+}
+
+glm::vec3 Camera::getYaw(void)
+{
+	return glm::normalize(orientation_ * GetUp());
 }
 
 

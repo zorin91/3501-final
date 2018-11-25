@@ -41,6 +41,10 @@ namespace game {
             void Yaw(float angle);
             void Roll(float angle);
 
+			glm::vec3 getRoll(void);
+			glm::vec3 getPitch(void);
+			glm::vec3 getYaw(void);
+
             // Set the view from camera parameters: initial position of camera,
             // point looking at, and up vector
             // Resets the current orientation and position of the camera

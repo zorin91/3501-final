@@ -185,7 +185,32 @@ void Game::MainLoop(void){
 
 		// render the loaded model
 		glm::mat4 model;
-		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
+		//ISROT
+
+		glm::vec3 yaw  /*X*/ = camera_.getRoll();
+		glm::vec3 roll /*Y*/ = camera_.getPitch();
+		glm::vec3 pitch   /*Z*/ = camera_.getYaw();
+
+		//Not working	
+		//roll			
+		//pitch			
+		//yaw			
+
+		//?				
+		//yaw			
+		//roll			
+		//pitch			
+
+		//?				
+		//pitch			
+		//yaw			
+		//roll			
+
+		model = glm::translate(model, glm::vec3(0.5, 0.5, -5.0)); // translate it down so it's at the center of the scene
+		model = glm::rotate(model, (float)glm::radians(90.0f), glm::vec3(-1, 0, 0));
+		model = glm::rotate(model, 1.0f, yaw);
+		//model = glm::rotate(model, 1.0f, roll);
+		//model = glm::rotate(model, 1.0f, pitch);
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
 		helicopterShader.setMat4("model", model);
 		helicopterTest.Draw(helicopterShader);
