@@ -12,6 +12,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "filesystem.h"
+
 #include "mesh.h"
 #include "shader.h"
 
@@ -47,7 +49,7 @@ public:
         for(unsigned int i = 0; i < meshes.size(); i++)
             meshes[i].Draw(shader);
     }
-    
+
 private:
     /*  Functions   */
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
@@ -63,7 +65,7 @@ private:
             return;
         }
         // retrieve the directory path of the filepath
-        directory = path.substr(0, path.find_last_of('/'));
+        this->directory = path.substr(0, path.find_last_of('/'));
 
         // process ASSIMP's root node recursively
         processNode(scene->mRootNode, scene);
@@ -191,6 +193,10 @@ private:
             if(!skip)
             {   // if texture hasn't been loaded already, load it
                 Texture texture;
+				//cout << "dir : ";
+				//cout << this->directory;
+				//cout << ", path : ";
+				//cout << str.C_Str() << endl;
                 texture.id = TextureFromFile(str.C_Str(), this->directory);
                 texture.type = typeName;
                 texture.path = str.C_Str();
@@ -207,6 +213,9 @@ unsigned int TextureFromFile(const char *path, const string &directory, bool gam
 {
     string filename = string(path);
     filename = directory + '/' + filename;
+
+	//cout << "FILENAME + " + filename << endl;
+	//cout << "DIRECTORY: " + FileSystem::getPath(path);
 
     unsigned int textureID;
     glGenTextures(1, &textureID);

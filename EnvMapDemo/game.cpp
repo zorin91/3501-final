@@ -15,9 +15,9 @@ namespace game {
 
 // Main window settings
 const std::string window_title_g = "Demo";
-const unsigned int window_width_g = 1920;
-const unsigned int window_height_g = 1080;
-const bool window_full_screen_g = true;
+const unsigned int window_width_g = 640;
+const unsigned int window_height_g = 480;
+const bool window_full_screen_g = false;
 
 // Viewport and camera settings
 float camera_near_clip_distance_g = 0.01;
@@ -129,9 +129,7 @@ void Game::SetupResources(void){
 
     // Load material to be applied to skybox
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/skybox");
-    resman_.LoadResource(Material, "SkyboxMaterial", filename.c_str());
-
-	Model helicopterTest = Model("C:/Users/Alex/Documents/GitHub/3501-final/gameAssets/helicopter/uh60.obj");
+	resman_.LoadResource(Material, "SkyboxMaterial", filename.c_str());
 }
 
 
@@ -155,6 +153,9 @@ void Game::SetupScene(void){
 
 void Game::MainLoop(void){
 
+	Model helicopterTest = Model("C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/gameAssets/helicopter/uh60.obj");
+	Shader helicopterShader = Shader("C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo/helicopterfrag.vs", "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo/helicopterfrag.fs");
+
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
         // Animate the scene
@@ -175,6 +176,19 @@ void Game::MainLoop(void){
 
         // Draw the scene
         scene_.Draw(&camera_);
+
+		helicopterShader.use();
+
+		// view/projection transformations
+		helicopterShader.setMat4("projection", camera_.getProjection());
+		helicopterShader.setMat4("view", camera_.getView());
+
+		// render the loaded model
+		glm::mat4 model;
+		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
+		helicopterShader.setMat4("model", model);
+		helicopterTest.Draw(helicopterShader);
 
         // Push buffer drawn in the background onto the display
         glfwSwapBuffers(window_);

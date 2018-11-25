@@ -77,6 +77,16 @@ glm::vec3 Camera::GetUp(void) const {
     return current_up;
 }
 
+glm::mat4 Camera::getProjection(void) const
+{
+	return this->projection_matrix_;
+}
+
+glm::mat4 Camera::getView(void) const
+{
+	return this->view_matrix_;
+}
+
 
 void Camera::Pitch(float angle){
 
