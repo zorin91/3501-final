@@ -1,2 +1,0 @@
-C:/Users/Alex/Desktop/comp3501/test final/envmapbin/CMakeFiles/EnvMapDemo.dir
-C:/Users/Alex/Desktop/comp3501/test final/envmapbin/CMakeFiles/ALL_BUILD.dir

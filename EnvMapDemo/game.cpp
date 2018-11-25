@@ -12,9 +12,9 @@ namespace game {
 
 // Main window settings
 const std::string window_title_g = "Demo";
-const unsigned int window_width_g = 800;
-const unsigned int window_height_g = 600;
-const bool window_full_screen_g = false;
+const unsigned int window_width_g = 1920;
+const unsigned int window_height_g = 1080;
+const bool window_full_screen_g = true;
 
 // Viewport and camera settings
 float camera_near_clip_distance_g = 0.01;
@@ -186,7 +186,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     Game *game = (Game *) ptr;
 
     // Quit game if 'q' is pressed
-    if (key == GLFW_KEY_Q && action == GLFW_PRESS){
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, true);
     }
 
@@ -210,33 +210,33 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_RIGHT){
         game->camera_.Yaw(-rot_factor);
     }
-    if (key == GLFW_KEY_S){
+    if (key == GLFW_KEY_Q){
         game->camera_.Roll(-rot_factor);
     }
-    if (key == GLFW_KEY_X){
+    if (key == GLFW_KEY_E){
         game->camera_.Roll(rot_factor);
     }
-    if (key == GLFW_KEY_A){
+    if (key == GLFW_KEY_W){
         game->camera_.Translate(game->camera_.GetForward()*trans_factor);
         game->skybox_->Translate(game->camera_.GetForward()*trans_factor);
     }
-    if (key == GLFW_KEY_Z){
+    if (key == GLFW_KEY_S){
         game->camera_.Translate(-game->camera_.GetForward()*trans_factor);
         game->skybox_->Translate(-game->camera_.GetForward()*trans_factor);
     }
-    if (key == GLFW_KEY_J){
+    if (key == GLFW_KEY_A){
         game->camera_.Translate(-game->camera_.GetSide()*trans_factor);
         game->skybox_->Translate(-game->camera_.GetSide()*trans_factor);
     }
-    if (key == GLFW_KEY_L){
+    if (key == GLFW_KEY_D){
         game->camera_.Translate(game->camera_.GetSide()*trans_factor);
         game->skybox_->Translate(game->camera_.GetSide()*trans_factor);
     }
-    if (key == GLFW_KEY_I){
+    if (key == GLFW_KEY_R){
         game->camera_.Translate(game->camera_.GetUp()*trans_factor);
         game->skybox_->Translate(game->camera_.GetUp()*trans_factor);
     }
-    if (key == GLFW_KEY_K){
+    if (key == GLFW_KEY_F){
         game->camera_.Translate(-game->camera_.GetUp()*trans_factor);
         game->skybox_->Translate(-game->camera_.GetUp()*trans_factor);
     }
