@@ -4,7 +4,7 @@ namespace game {
 
 	Bullet::Bullet(const std::string name, const Resource *geometry, const Resource *material, glm::vec3 pos, glm::vec3 traj) : SceneNode(name, geometry, material) {
 		position = pos;
-		trajectory = traj
+		trajectory = traj;
 	}
 
 

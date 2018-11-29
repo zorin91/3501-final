@@ -39,7 +39,8 @@ namespace game {
             glm::quat angm_;
 			glm::vec3 position;
 			float speed = 1.0;
-			float damage;
+			float damage = 100;
+			float radius = 15;
 			float elapsedTime = 0;
 			bool dead = false;
 

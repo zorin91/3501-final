@@ -32,7 +32,7 @@ namespace game {
 		void setPosition(glm::vec3 pos);
 
 		glm::vec3 getTrajectory();
-		void setTrajectory(glm::vec traj);
+		void setTrajectory(glm::vec3 traj);
 
 		// Update geometry configuration
 		void Update(float timer);
@@ -43,7 +43,8 @@ namespace game {
 		glm::vec3 position;
 		glm::vec3 trajectory;
 		float speed = 1.0;
-		float damage;
+		float damage = 10;
+		float radius = 10;
 		float elapsedTime = 0;
 		bool dead = false;
 
