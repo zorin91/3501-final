@@ -21,7 +21,7 @@ const bool window_full_screen_g = false;
 
 // Viewport and camera settings
 float camera_near_clip_distance_g = 0.01;
-float camera_far_clip_distance_g = 1000.0;
+float camera_far_clip_distance_g = 10000.0;
 float camera_fov_g = 50.0; // Field-of-view of camera
 const glm::vec3 viewport_background_color_g(0.0, 0.0, 0.0);
 glm::vec3 camera_position_g(0.0, 0.0, 0.0);
@@ -130,7 +130,20 @@ void Game::SetupResources(void){
     // Load material to be applied to skybox
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/skybox");
 	resman_.LoadResource(Material, "SkyboxMaterial", filename.c_str());
+
+	// Load a cube from an obj file
+	filename = std::string(MATERIAL_DIRECTORY) + std::string("/Ter2.obj");
+	resman_.LoadResource(Mesh, "CubeMesh2", filename.c_str());
+
+	// Load texture to be applied to the cube
+	filename = std::string(MATERIAL_DIRECTORY) + std::string("/test.png");
+	resman_.LoadResource(Texture, "Checker2", filename.c_str());
+
+	// Load material to be applied to the cube
+	filename = std::string(MATERIAL_DIRECTORY) + std::string("/textured_material");
+	resman_.LoadResource(Material, "TexturedMaterial2", filename.c_str());
 }
+
 
 
 void Game::SetupScene(void){
@@ -146,15 +159,29 @@ void Game::SetupScene(void){
 
     // Create skybox
     skybox_ = CreateInstance("CubeInstance1", "CubeMesh", "SkyboxMaterial");
-    skybox_->Scale(glm::vec3(50.0, 50.0, 50.0));
+    skybox_->Scale(glm::vec3(50.0, 20.0, 50.0));
+	
+	game::SceneNode *cube = CreateInstance("CubeInstance2", "CubeMesh2", "TexturedMaterial2", "Checker2");
+	// Adjust the instance
+	cube->Scale(glm::vec3(3.0, 2.0, 3.0));
+
+	
+	
+
+
 
 }
 
 
 void Game::MainLoop(void){
 
-	Model helicopterTest = Model("C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/gameAssets/helicopter/uh60.obj");
-	Shader helicopterShader = Shader("C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo/helicopterfrag.vs", "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo/helicopterfrag.fs");
+	//Model helicopterTest = Model("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\gameAssets\\helicopter\\uh60.obj");
+	Shader helicopterShader = Shader("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\EnvMapDemo\\helicopterfrag.fs", "C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\EnvMapDemo\\helicopterfrag.vs");
+	Model enemyhelicopter = Model("C:/Users/nicho/Documents/3501 Final/3501-final/gameAssets/testheli/Mi-28N_Havoc_BF3/havoc.obj");
+	Model tank = Model("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\gameAssets\\tank\\test.obj");
+	//Model deathstar = Model("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\gameAssets\\deathstar\\test.obj");
+
+	
 
 	float rot_factor(glm::pi<float>() / 180);
 	float rotation = 0.0f;
@@ -169,6 +196,11 @@ void Game::MainLoop(void){
 	glm::vec3 currentFwd = camera_.GetForward();
 	glm::vec3 currentSide = camera_.GetSide();
 
+
+	//Test for weapon systems
+	Bomb *bomb = new Bomb(resman_.GetResource("CubeMesh2"), resman_.GetResource("TexturedMaterial2"), glm::vec3(0, 0, 0));
+	Bullet * bullet = new Bullet(resman_.GetResource("CubeMesh2"), resman_.GetResource("TexturedMaterial2"), glm::vec3(0, 0, 0), camera_.GetForward());
+
     // Loop while the user did not close the window
 	while (!glfwWindowShouldClose(window_)) {
 		// Animate the scene
@@ -176,12 +208,16 @@ void Game::MainLoop(void){
 			static double last_time = 0;
 			double current_time = glfwGetTime();
 			if ((current_time - last_time) > 0.01) {
+				deltaTime = current_time - last_time;
 				//scene_.Update();
 
 				// Animate the sphere
 				SceneNode *node = scene_.GetNode("TorusInstance1");
 				glm::quat rotation = glm::angleAxis(glm::pi<float>() / 180.0f, glm::vec3(0.0, 1.0, 0.0));
 				node->Rotate(rotation);
+
+				bomb->update(deltaTime);
+				bullet->update(deltaTime);
 
 				last_time = current_time;
 			}
@@ -226,7 +262,6 @@ void Game::MainLoop(void){
 				this->camera_.Pitch(0.005);
 			}
 		}
-
 		if (glfwGetKey(window_, GLFW_KEY_LEFT))
 		{
 			this->camera_.Yaw(rot_factor);
@@ -239,7 +274,6 @@ void Game::MainLoop(void){
 			currentFwd = camera_.GetForward();
 			currentSide = camera_.GetSide();
 		}
-
 		if (glfwGetKey(window_, GLFW_KEY_Q))
 		{
 			this->camera_.Roll(rot_factor);
@@ -263,7 +297,7 @@ void Game::MainLoop(void){
 			currentSide = camera_.GetSide();
 		}
 
-		cout << forwardLean << endl;
+		//cout << forwardLean << endl;
 
 		if (glfwGetKey(window_, GLFW_KEY_R))
 		{
@@ -370,7 +404,17 @@ void Game::MainLoop(void){
 		//model = glm::rotate(model, 1.0f, pitch);
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
 		helicopterShader.setMat4("model", model);
-		helicopterTest.Draw(helicopterShader);
+		enemyhelicopter.Draw(helicopterShader);
+
+		model = glm::translate(model, glm::vec3(-2.5, 0.5, -5.0)); // translate it down so it's at the center of the scene
+		helicopterShader.setMat4("model", model);
+		tank.Draw(helicopterShader);
+
+
+		//model = glm::mat4();
+		///helicopterShader.setMat4("model", model);
+		//helicopterTest.Draw(helicopterShader);
+		//enemyhelicopter.Draw(helicopterShader);
 
         // Push buffer drawn in the background onto the display
         glfwSwapBuffers(window_);

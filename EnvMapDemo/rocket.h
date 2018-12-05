@@ -15,11 +15,11 @@
 namespace game {
 
 
-	class Rocket : public SceneNode {
+	class Rocket{
 
 	public:
 		// Constructor
-		Rocket(const std::string name, const Resource *geometry, const Resource *material, glm::vec3 pos, glm::vec3 traj);
+		Rocket(const Resource *geometry, const Resource *material, glm::vec3 pos, glm::vec3 traj);
 
 		// Destructor
 		~Rocket();
@@ -35,7 +35,7 @@ namespace game {
 		void setTrajectory(glm::vec3 traj);
 
 		// Update geometry configuration
-		void Update(float timer);
+		void update(float timer);
 
 	private:
 		// Angular momentum of asteroid

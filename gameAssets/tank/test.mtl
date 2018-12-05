@@ -10,8 +10,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd texture_0010.dds
-map_Ka texture_0010.dds
+map_Kd C:/Users/nicho/Documents/University Docs/3rd Year/[F] Comp 3501 Game Dev III/3501-final/gameAssets/tank/texture_0010.dds
+map_Ka /texture_0010.dds
 
 newmtl 89757347_dds
 Ns 9.803922
@@ -22,8 +22,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd texture_0013.dds
-map_Ka texture_0013.dds
+map_Kd /texture_0013.dds
+map_Ka /texture_0013.dds
 
 newmtl 8ead3179_dds
 Ns 9.803922
@@ -34,8 +34,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd texture_0007.dds
-map_Ka texture_0007.dds
+map_Kd /texture_0007.dds
+map_Ka /texture_0007.dds
 
 newmtl Material__35347
 Ns 9.803922
@@ -46,8 +46,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd texture_0001.dds
-map_Ka texture_0001.dds
+map_Kd /texture_0001.dds
+map_Ka /texture_0001.dds
 
 newmtl Material__35348
 Ns 9.803922
@@ -58,8 +58,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd texture_0001.dds
-map_Ka texture_0001.dds
+map_Kd /texture_0001.dds
+map_Ka /texture_0001.dds
 
 newmtl a2b76d65_dds
 Ns 9.803922
@@ -70,5 +70,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd texture_0007.dds
-map_Ka texture_0007.dds
+map_Kd /texture_0007.dds
+map_Ka /texture_0007.dds

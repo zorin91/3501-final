@@ -2,7 +2,7 @@
 
 namespace game {
 
-	Rocket::Rocket(const std::string name, const Resource *geometry, const Resource *material, glm::vec3 pos, glm::vec3 traj) : SceneNode(name, geometry, material) {
+	Rocket::Rocket(const Resource *geometry, const Resource *material, glm::vec3 pos, glm::vec3 traj){
 		position = pos;
 		trajectory = traj;
 	}
@@ -24,11 +24,11 @@ namespace game {
 	}
 
 
-	void Rocket::Update(float timer) {
+	void Rocket::update(float timer) {
 		
 		//Update position
 		position += trajectory * timer * speed;
-		position.y -= timer;
+		position.y -= timer * speed / 2;
 
 		//Check timer
 		elapsedTime += timer;
