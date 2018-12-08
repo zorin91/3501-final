@@ -21,14 +21,14 @@ const bool window_full_screen_g = true;
 
 // Viewport and camera settings
 float camera_near_clip_distance_g = 0.01;
-float camera_far_clip_distance_g = 1000.0;
+float camera_far_clip_distance_g = 10000.0;
 float camera_fov_g = 50.0; // Field-of-view of camera
 const glm::vec3 viewport_background_color_g(0.0, 0.0, 0.0);
 glm::vec3 camera_position_g(0.0, 0.0, 0.0);
 glm::vec3 camera_look_at_g(0.0, 0.0, -10.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 
-// Materials 
+// Materials
 const std::string material_directory_g = MATERIAL_DIRECTORY;
 
 
@@ -49,7 +49,7 @@ void Game::Init(void){
     animating_ = true;
 }
 
-       
+
 void Game::InitWindow(void){
 
     // Initialize the window management library (GLFW)
@@ -137,12 +137,13 @@ void Game::SetupResources(void){
 
 	// Load texture to be applied to the cube
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/test.png");
-	resman_.LoadResource(Texture, "Checker", filename.c_str());
+	resman_.LoadResource(Texture, "Checker2", filename.c_str());
 
 	// Load material to be applied to the cube
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/textured_material");
-	resman_.LoadResource(Material, "TexturedMaterial", filename.c_str());
+	resman_.LoadResource(Material, "TexturedMaterial2", filename.c_str());
 }
+
 
 
 void Game::SetupScene(void){
@@ -158,7 +159,16 @@ void Game::SetupScene(void){
 
     // Create skybox
     skybox_ = CreateInstance("CubeInstance1", "CubeMesh", "SkyboxMaterial");
-    skybox_->Scale(glm::vec3(50.0, 50.0, 50.0));
+    skybox_->Scale(glm::vec3(50.0, 20.0, 50.0));
+
+	game::SceneNode *cube = CreateInstance("CubeInstance2", "CubeMesh2", "TexturedMaterial2", "Checker2");
+	// Adjust the instance
+	cube->Scale(glm::vec3(3.0, 2.0, 3.0));
+
+
+
+
+
 
 
 	// Create the terrain
@@ -169,14 +179,8 @@ void Game::SetupScene(void){
 
 void Game::MainLoop(void){
 
-	Model helicopterTest = Model("C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/gameAssets/helicopter/uh60.obj");
-	Shader helicopterShader = Shader("C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo/helicopterfrag.vs", "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo/helicopterfrag.fs");
-	Model treeModel("C:/Users/Alex/Desktop/3501finalmodels/halo/Ice Fields/Scenery/test.obj");
-	Model tankModel("C:/Users/Alex/Desktop/3501finalmodels/crazytank/tank/test.obj");
-	Model enemyHeliModel("C:/Users/Alex/Desktop/3501finalmodels/testheli/Mi-28N_Havoc_BF3/test.obj");
-	Model towerModel("C:/Users/Alex/Desktop/3501finalmodels/watchtower/obj/wooden watch tower2.obj");
-	Model complexModel("C:/Users/Alex/Desktop/3501finalmodels/complex/Runtime/Libraries/Character/Herminio Nieves/Nubian Complex/nubian complex.obj");
-	Model deathstarModel("C:/Users/Alex/Desktop/3501finalmodels/deathstar/test.obj");
+<<<<<<< HEAD
+
 
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
@@ -195,6 +199,218 @@ void Game::MainLoop(void){
                 last_time = current_time;
             }
         }
+=======
+	//Model helicopterTest = Model("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\gameAssets\\helicopter\\uh60.obj");
+	Shader helicopterShader = Shader("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\EnvMapDemo\\helicopterfrag.fs", "C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\EnvMapDemo\\helicopterfrag.vs");
+	Model enemyhelicopter = Model("C:/Users/nicho/Documents/3501 Final/3501-final/gameAssets/testheli/Mi-28N_Havoc_BF3/havoc.obj");
+	Model tank = Model("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\gameAssets\\tank\\test.obj");
+	//Model deathstar = Model("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\gameAssets\\deathstar\\test.obj");
+
+  Model helicopterTest = Model("C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/gameAssets/helicopter/uh60.obj");
+  Shader helicopterShader = Shader("C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo/helicopterfrag.vs", "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo/helicopterfrag.fs");
+  Model treeModel("C:/Users/Alex/Desktop/3501finalmodels/halo/Ice Fields/Scenery/test.obj");
+  Model tankModel("C:/Users/Alex/Desktop/3501finalmodels/crazytank/tank/test.obj");
+  Model enemyHeliModel("C:/Users/Alex/Desktop/3501finalmodels/testheli/Mi-28N_Havoc_BF3/test.obj");
+  Model towerModel("C:/Users/Alex/Desktop/3501finalmodels/watchtower/obj/wooden watch tower2.obj");
+  Model complexModel("C:/Users/Alex/Desktop/3501finalmodels/complex/Runtime/Libraries/Character/Herminio Nieves/Nubian Complex/nubian complex.obj");
+  Model deathstarModel("C:/Users/Alex/Desktop/3501finalmodels/deathstar/test.obj");
+
+	float rot_factor(glm::pi<float>() / 180);
+	float rotation = 0.0f;
+	float trans_factor = 0.05;
+
+	float forwardLean = 0.0f;
+	float leftLean = 0.0f;
+	float rightLean = 0.0f;
+
+	float acceleration = 0.0f;
+
+	glm::vec3 currentFwd = camera_.GetForward();
+	glm::vec3 currentSide = camera_.GetSide();
+
+
+	//Test for weapon systems
+	Bomb *bomb = new Bomb(resman_.GetResource("CubeMesh2"), resman_.GetResource("TexturedMaterial2"), glm::vec3(0, 0, 0));
+	Bullet * bullet = new Bullet(resman_.GetResource("CubeMesh2"), resman_.GetResource("TexturedMaterial2"), glm::vec3(0, 0, 0), camera_.GetForward());
+
+    // Loop while the user did not close the window
+	while (!glfwWindowShouldClose(window_)) {
+		// Animate the scene
+		if (animating_) {
+			static double last_time = 0;
+			double current_time = glfwGetTime();
+			if ((current_time - last_time) > 0.01) {
+				deltaTime = current_time - last_time;
+				//scene_.Update();
+
+				// Animate the sphere
+				SceneNode *node = scene_.GetNode("TorusInstance1");
+				glm::quat rotation = glm::angleAxis(glm::pi<float>() / 180.0f, glm::vec3(0.0, 1.0, 0.0));
+				node->Rotate(rotation);
+
+				bomb->update(deltaTime);
+				bullet->update(deltaTime);
+
+				last_time = current_time;
+			}
+		}
+
+		if (glfwGetKey(window_, GLFW_KEY_W))
+		{
+			acceleration += 0.001;
+			forwardLean += 0.005;
+			if (forwardLean > 0.2)
+			{
+				forwardLean = 0.2;
+			}
+			else
+			{
+				this->camera_.Pitch(-0.005);
+			}
+		}
+		else if (glfwGetKey(window_, GLFW_KEY_S))
+		{
+			acceleration -= 0.002;
+			forwardLean -= 0.01;
+			if (forwardLean < 0)
+			{
+				forwardLean = 0;
+			}
+			else
+			{
+				this->camera_.Pitch(0.01);
+			}
+		}
+		else
+		{
+			acceleration -= 0.0005;
+			forwardLean -= 0.005;
+			if (forwardLean < 0)
+			{
+				forwardLean = 0;
+			}
+			else
+			{
+				this->camera_.Pitch(0.005);
+			}
+		}
+		if (glfwGetKey(window_, GLFW_KEY_LEFT))
+		{
+			this->camera_.Yaw(rot_factor);
+			currentFwd = camera_.GetForward();
+			currentSide = camera_.GetSide();
+		}
+		if (glfwGetKey(window_, GLFW_KEY_RIGHT))
+		{
+			this->camera_.Yaw(-rot_factor);
+			currentFwd = camera_.GetForward();
+			currentSide = camera_.GetSide();
+		}
+		if (glfwGetKey(window_, GLFW_KEY_Q))
+		{
+			this->camera_.Roll(rot_factor);
+			rotation += rot_factor;
+			if (rotation > 0.2)
+			{
+				rotation = 0.2;
+				this->camera_.Roll(-rot_factor);
+			}
+			currentSide = camera_.GetSide();
+		}
+		if (glfwGetKey(window_, GLFW_KEY_E))
+		{
+			this->camera_.Roll(-rot_factor);
+			rotation -= rot_factor;
+			if (rotation < -0.2)
+			{
+				rotation = -0.2;
+				this->camera_.Roll(rot_factor);
+			}
+			currentSide = camera_.GetSide();
+		}
+
+		//cout << forwardLean << endl;
+
+		if (glfwGetKey(window_, GLFW_KEY_R))
+		{
+			this->camera_.Translate(this->camera_.GetUp() * trans_factor);
+			this->skybox_->Translate(this->camera_.GetUp() * trans_factor);
+		}
+		if (glfwGetKey(window_, GLFW_KEY_F))
+		{
+			this->camera_.Translate(-this->camera_.GetUp() * trans_factor);
+			this->skybox_->Translate(-this->camera_.GetUp() * trans_factor);
+		}
+
+		if (glfwGetKey(window_, GLFW_KEY_A) == GLFW_PRESS)
+		{
+			leftLean += 0.005;
+			if (leftLean > 0.2)
+			{
+				leftLean = 0.2;
+			}
+			else
+			{
+				this->camera_.Roll(-0.005);
+			}
+
+			this->camera_.Translate(-this->camera_.GetSide() * trans_factor);
+			this->skybox_->Translate(-this->camera_.GetSide() * trans_factor);
+		}
+		else if (glfwGetKey(window_, GLFW_KEY_A) == GLFW_RELEASE)
+		{
+			leftLean -= 0.005;
+			if (leftLean < 0)
+			{
+				leftLean = 0;
+			}
+			else
+			{
+				this->camera_.Roll(0.005);
+			}
+		}
+
+		if (glfwGetKey(window_, GLFW_KEY_D) == GLFW_PRESS)
+		{
+			rightLean += 0.005;
+			if (rightLean > 0.2)
+			{
+				rightLean = 0.2;
+			}
+			else
+			{
+				this->camera_.Roll(0.005);
+			}
+
+			this->camera_.Translate(this->camera_.GetSide() * trans_factor);
+			this->skybox_->Translate(this->camera_.GetSide() * trans_factor);
+		}
+		else if (glfwGetKey(window_, GLFW_KEY_D) == GLFW_RELEASE)
+		{
+			rightLean -= 0.005;
+			if (rightLean < 0)
+			{
+				rightLean = 0;
+			}
+			else
+			{
+				this->camera_.Roll(-0.005);
+			}
+		}
+
+		if (acceleration < 0)
+		{
+			acceleration = 0;
+		}
+
+		if (acceleration > 0.1)
+		{
+			acceleration = 0.1;
+		}
+
+		this->camera_.Translate(currentFwd * acceleration);
+		this->skybox_->Translate(currentFwd * acceleration);
+>>>>>>> fb02e929017ab21b74514517089c171cc59403d9
 
         // Draw the scene
         scene_.Draw(&camera_);
@@ -209,37 +425,33 @@ void Game::MainLoop(void){
 		glm::mat4 model;
 		//ISROT
 
-		glm::vec3 yaw  /*X*/ = camera_.getRoll();
-		glm::vec3 roll /*Y*/ = camera_.getPitch();
-		glm::vec3 pitch   /*Z*/ = camera_.getYaw();
-
-		//Not working	
-		//roll			
-		//pitch			
-		//yaw			
-
-		//?				
-		//yaw			
-		//roll			
-		//pitch			
-
-		//?				
-		//pitch			
-		//yaw			
-		//roll			
+		glm::vec3 yaw   /*X*/ = camera_.getRoll();
+		glm::vec3 roll  /*Y*/ = camera_.getPitch();
+		glm::vec3 pitch /*Z*/ = camera_.getYaw();
 
 		model = glm::translate(model, glm::vec3(0.5, 0.5, -5.0)); // translate it down so it's at the center of the scene
 		model = glm::rotate(model, (float)glm::radians(90.0f), glm::vec3(-1, 0, 0));
-		model = glm::rotate(model, 1.0f, yaw);
+		//This is to rotate the helicopter but it doesn't work currently
+		//model = glm::rotate(model, 1.0f, yaw);
 		//model = glm::rotate(model, 1.0f, roll);
 		//model = glm::rotate(model, 1.0f, pitch);
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
 		helicopterShader.setMat4("model", model);
-		helicopterTest.Draw(helicopterShader);
+		enemyhelicopter.Draw(helicopterShader);
+
+		model = glm::translate(model, glm::vec3(-2.5, 0.5, -5.0)); // translate it down so it's at the center of the scene
+		helicopterShader.setMat4("model", model);
+		tank.Draw(helicopterShader);
+
+
+		//model = glm::mat4();
+		///helicopterShader.setMat4("model", model);
+		//helicopterTest.Draw(helicopterShader);
+		//enemyhelicopter.Draw(helicopterShader);
 
 		model = glm::mat4();
 		model = glm::scale(model, glm::vec3(2.2f, 2.2f, 2.2f));	// it's a bit too big for our scene, so scale it down
-		
+
 		treeModel.Draw(helicopterShader);
 		tankModel.Draw(helicopterShader);
 		enemyHeliModel.Draw(helicopterShader);
@@ -284,52 +496,6 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS){
         game->animating_ = (game->animating_ == true) ? false : true;
     }
-
-    // View control
-    float rot_factor(glm::pi<float>() / 180);
-    float trans_factor = 1.0;
-    if (key == GLFW_KEY_UP){
-        game->camera_.Pitch(rot_factor);
-    }
-    if (key == GLFW_KEY_DOWN){
-        game->camera_.Pitch(-rot_factor);
-    }
-    if (key == GLFW_KEY_LEFT){
-        game->camera_.Yaw(rot_factor);
-    }
-    if (key == GLFW_KEY_RIGHT){
-        game->camera_.Yaw(-rot_factor);
-    }
-    if (key == GLFW_KEY_Q){
-        game->camera_.Roll(-rot_factor);
-    }
-    if (key == GLFW_KEY_E){
-        game->camera_.Roll(rot_factor);
-    }
-    if (key == GLFW_KEY_W){
-        game->camera_.Translate(game->camera_.GetForward()*trans_factor);
-        game->skybox_->Translate(game->camera_.GetForward()*trans_factor);
-    }
-    if (key == GLFW_KEY_S){
-        game->camera_.Translate(-game->camera_.GetForward()*trans_factor);
-        game->skybox_->Translate(-game->camera_.GetForward()*trans_factor);
-    }
-    if (key == GLFW_KEY_A){
-        game->camera_.Translate(-game->camera_.GetSide()*trans_factor);
-        game->skybox_->Translate(-game->camera_.GetSide()*trans_factor);
-    }
-    if (key == GLFW_KEY_D){
-        game->camera_.Translate(game->camera_.GetSide()*trans_factor);
-        game->skybox_->Translate(game->camera_.GetSide()*trans_factor);
-    }
-    if (key == GLFW_KEY_R){
-        game->camera_.Translate(game->camera_.GetUp()*trans_factor);
-        game->skybox_->Translate(game->camera_.GetUp()*trans_factor);
-    }
-    if (key == GLFW_KEY_F){
-        game->camera_.Translate(-game->camera_.GetUp()*trans_factor);
-        game->skybox_->Translate(-game->camera_.GetUp()*trans_factor);
-    }
 }
 
 
@@ -344,7 +510,7 @@ void Game::ResizeCallback(GLFWwindow* window, int width, int height){
 
 
 Game::~Game(){
-    
+
     glfwTerminate();
 }
 

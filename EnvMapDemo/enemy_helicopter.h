@@ -1,5 +1,5 @@
-#ifndef ROCKET_H
-#define ROCKET_H
+#ifndef EHELI_H
+#define EHELI_H
 
 #include <string>
 #define GLEW_STATIC
@@ -8,25 +8,27 @@
 #include <glm/glm.hpp>
 #define GLM_FORCE_RADIANS
 #include <glm/gtc/quaternion.hpp>
+#include <vector>
 
 #include "resource.h"
 #include "scene_node.h"
+#include "bullet.h"
 
 namespace game {
 
 
-	class Rocket{
+	class EnemyHeli{
 
 	public:
 		// Constructor
-		Rocket(const Resource *geometry, const Resource *material, glm::vec3 pos, glm::vec3 traj);
+		EnemyHeli(const Resource *geometry, const Resource *material, glm::vec3 pos, std::vector<Bullet *> bullets);
 
 		// Destructor
-		~Rocket();
+		~EnemyHeli();
 
 		//Get Set methods
-		glm::quat GetAngM(void) const;
-		void SetAngM(glm::quat angm);
+		glm::quat getAngle(void) const;
+		void getAngle(glm::quat angm);
 
 		glm::vec3 getPosition();
 		void setPosition(glm::vec3 pos);
@@ -39,13 +41,14 @@ namespace game {
 
 	private:
 		// Angular momentum of asteroid
-		glm::quat angm_;
+		glm::quat angle;
 		glm::vec3 position;
 		glm::vec3 trajectory;
 		float speed = 1.0;
-		float damage = 10;
-		float radius = 10;
-		float elapsedTime = 0;
+		float health = 50;
+		float radius = 20;
+		float timer = 0;
+		float rateOfFire = 0.1;
 		bool dead = false;
 
 	};

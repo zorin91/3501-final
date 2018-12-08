@@ -15,11 +15,11 @@
 namespace game {
 
 
-	class Bullet : public SceneNode {
+	class Bullet{
 
 	public:
 		// Constructor
-		Bullet(const std::string name, const Resource *geometry, const Resource *material, glm::vec3 pos, glm::vec3 traj);
+		Bullet(const Resource *geometry, const Resource *material, glm::vec3 pos, glm::vec3 traj);
 
 		// Destructor
 		~Bullet();
@@ -32,10 +32,10 @@ namespace game {
 		void setPosition(glm::vec3 pos);
 
 		glm::vec3 getTrajectory();
-		void setTrajectory(glm::vec traj);
+		void setTrajectory(glm::vec3 traj);
 
 		// Update geometry configuration
-		void Update(float timer);
+		void update(float timer);
 
 	private:
 		// Angular momentum of asteroid
@@ -43,7 +43,8 @@ namespace game {
 		glm::vec3 position;
 		glm::vec3 trajectory;
 		float speed = 1.0;
-		float damage;
+		float damage = 2;
+		float radius = 5;
 		float elapsedTime = 0;
 		bool dead = false;
 

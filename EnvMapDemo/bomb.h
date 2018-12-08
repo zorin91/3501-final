@@ -15,11 +15,11 @@
 namespace game {
 
     
-    class Bomb : public SceneNode {
+    class Bomb{
 
         public:
             // Constructor
-            Bomb(const std::string name, const Resource *geometry, const Resource *material, glm::vec3 pos);
+            Bomb(const Resource *geometry, const Resource *material, glm::vec3 pos);
 
             // Destructor
             ~Bomb();
@@ -32,16 +32,20 @@ namespace game {
 			void setPosition(glm::vec3 pos);
 			
 			// Update geometry configuration
-            void Update(float timer);
+            void update(float timer);
+			void draw();
 
         private:
             // Angular momentum of asteroid
             glm::quat angm_;
 			glm::vec3 position;
 			float speed = 1.0;
-			float damage;
+			float damage = 100;
+			float radius = 15;
 			float elapsedTime = 0;
 			bool dead = false;
+			Resource *geometry;
+			Resource *material;
 
     }; 
 

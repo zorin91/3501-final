@@ -1,10 +1,11 @@
 #include "bullet.h"
+#include <iostream>
 
 namespace game {
 
-	Bullet::Bullet(const std::string name, const Resource *geometry, const Resource *material, glm::vec3 pos, glm::vec3 traj) : SceneNode(name, geometry, material) {
+	Bullet::Bullet(const Resource *geometry, const Resource *material, glm::vec3 pos, glm::vec3 traj){
 		position = pos;
-		trajectory = traj
+		trajectory = traj;
 	}
 
 
@@ -24,16 +25,19 @@ namespace game {
 	}
 
 
-	void Bullet::Update(float timer) {
+	void Bullet::update(float timer) {
 
-		//Update position
-		position += trajectory * timer * speed;
-		position.y -= timer;
+		if (!dead) {
+			//Update position
+			position += trajectory * timer * speed;
+			//position.y -= timer;
 
-		//Check timer
-		elapsedTime += timer;
-		if (timer >= 10.0) {
-			dead = true;
+			//Check timer
+			elapsedTime += timer;
+			if (timer >= 10.0) {
+				dead = true;
+			}
+			//std::cout << "Bullet position: " << position.x << " " << position.y << " " << position.z << std::endl;
 		}
 	}
 

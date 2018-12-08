@@ -6,11 +6,15 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <vector>
 
 #include "scene_graph.h"
 #include "resource_manager.h"
 #include "camera.h"
 #include "asteroid.h"
+#include "rocket.h"
+#include "bullet.h"
+#include "bomb.h"
 
 namespace game {
 
@@ -64,6 +68,14 @@ namespace game {
             void InitWindow(void);
             void InitView(void);
             void InitEventHandlers(void);
+
+			//Timer for update methods
+			float deltaTime;
+
+			//Collections for the weapons that enemies have
+			std::vector <Bomb *> bombs;
+			std::vector <Bullet *> bullets;
+			std::vector <Rocket *> rockets;
  
             // Methods to handle events
             static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
