@@ -169,8 +169,10 @@ void Game::SetupScene(void){
 }
 
 //When testing stuff on your computer just add the path here
-#define PATHTOSHADER "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo"
-#define PATHTOMODELS "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final"
+//#define PATHTOSHADER "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo"
+//#define PATHTOMODELS "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final"
+#define PATHTOSHADER "C:/Users/Alex/Documents/GitHub/3501-final/EnvMapDemo"
+#define PATHTOMODELS "C:/Users/Alex/Documents/GitHub/3501-final"
 
 void Game::MainLoop(void){
 	//Model helicopterTest = Model("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\gameAssets\\helicopter\\uh60.obj");
@@ -182,9 +184,10 @@ void Game::MainLoop(void){
 	//Work the macro magic
 	
     Model helicopterTest = Model(PATHTOMODELS "/gameAssets/helicopter/uh60.obj");
-    Shader helicopterShader = Shader(PATHTOSHADER "/helicopterfrag.vs", PATHTOSHADER "/helicopterfrag.fs");
+    Shader ourShader = Shader(PATHTOSHADER "/helicopterfrag.vs", PATHTOSHADER "/helicopterfrag.fs");
     Model tankModel(PATHTOMODELS "/gameAssets/tank/test.obj");
-    Model enemyHeliModel(PATHTOMODELS "/gameAssets/testheli/Mi-28N_Havoc_BF3/test.obj");
+    Model enemyHeliModel(PATHTOMODELS "/gameAssets/testheli/Mi-28N_Havoc_BF3/body.obj");
+	Model enemyHeliRotorModel(PATHTOMODELS "/gameAssets/testheli/Mi-28N_Havoc_BF3/rotor2.obj");
     Model towerModel(PATHTOMODELS "/gameAssets/watchtower/obj/wooden watch tower2.obj");
     Model complexModel(PATHTOMODELS "/gameAssets/Nubian Complex/nubian complex.obj");
     Model deathstarModel(PATHTOMODELS "/gameAssets/deathstar/test.obj");
@@ -213,6 +216,9 @@ void Game::MainLoop(void){
 	cout << "After making the bomb!" << endl;
 
 	scene_.AddNode(bomb);
+
+	float rotorAngle = 180;
+	float rotateBy = 0.1;
 
 	//Bullet * bullet = new Bullet(resman_.GetResource("CubeMesh2"), resman_.GetResource("TexturedMaterial2"), glm::vec3(0, 0, 0), camera_.GetForward());
 
@@ -399,11 +405,11 @@ void Game::MainLoop(void){
 		//bomb->Bomb::Draw(&camera_);
         scene_.Draw(&camera_);
 
-		helicopterShader.use();
+		ourShader.use();
 
 		// view/projection transformations
-		helicopterShader.setMat4("projection", camera_.getProjection());
-		helicopterShader.setMat4("view", camera_.getView());
+		ourShader.setMat4("projection", camera_.getProjection());
+		ourShader.setMat4("view", camera_.getView());
 
 		// render the loaded model
 		glm::mat4 model;
@@ -413,6 +419,74 @@ void Game::MainLoop(void){
 		glm::vec3 roll  /*Y*/ = camera_.getPitch();
 		glm::vec3 pitch /*Z*/ = camera_.getYaw();
 
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));	// it's a bit too big for our scene, so scale it down
+		ourShader.setMat4("model", model);
+		//ourModel.Draw(ourShader);
+
+
+		//tank1
+		model = glm::mat4();
+		model = glm::translate(model, glm::vec3(-50.0, -42., 0.0)); // translate it down so it's at the center of the scene
+		model = glm::rotate(model, 180.0f*(180.0f / 3.14159f), glm::vec3(0.0, 1.0, 0.0));
+		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));	// it's a bit too big for our scene, so scale it down
+		ourShader.setMat4("model", model);
+		tankModel.Draw(ourShader);
+
+		//tank2
+		model = glm::mat4();
+		model = glm::translate(model, glm::vec3(-70.0, -48, 0.0)); // translate it down so it's at the center of the scene
+		model = glm::rotate(model, 180.0f*(180.0f / 3.14159f), glm::vec3(0.0, 1.0, 0.0));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));	// it's a bit too big for our scene, so scale it down
+		ourShader.setMat4("model", model);
+
+		tankModel.Draw(ourShader);
+
+		//enemyheli1 (far)
+		model = glm::mat4();
+		model = glm::translate(model, glm::vec3(-200.0, 0.0, -800.0)); // translate it down so it's at the center of the scene
+		model = glm::rotate(model, 90.0f*(180.0f / 3.14159f), glm::vec3(0.0, 1.0, 0.0));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));	// it's a bit too big for our scene, so scale it down
+		ourShader.setMat4("model", model);
+		enemyHeliModel.Draw(ourShader);
+		rotorAngle += rotateBy;
+		model = glm::rotate(model, rotorAngle, glm::vec3(0, 1, 0));
+		ourShader.setMat4("model", model);
+		enemyHeliRotorModel.Draw(ourShader);
+
+
+		//enemyheli2 (close)
+		model = glm::mat4();
+		model = glm::translate(model, glm::vec3(0.0, 0.0, -20.0)); // translate it down so it's at the center of the scene
+		model = glm::rotate(model, 180.0f*(180.0f / 3.14159f), glm::vec3(0.0, 1.0, 0.0));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));	// it's a bit too big for our scene, so scale it down
+		ourShader.setMat4("model", model);
+		enemyHeliModel.Draw(ourShader);
+		rotorAngle += rotateBy;
+		model = glm::rotate(model, rotorAngle, glm::vec3(0, 1, 0));
+		ourShader.setMat4("model", model);
+		enemyHeliRotorModel.Draw(ourShader);
+
+		//complex
+		model = glm::mat4();
+		model = glm::translate(model, glm::vec3(-100.0, -100.0, -800.0));
+		//model = glm::rotate(model, 180.0f * 180 / 3.14159f, glm::vec3(0.0, 0.0, 1.0));
+		model = glm::scale(model, glm::vec3(50.0f, 50.0f, 50.0f));	// it's a bit too big for our scene, so scale it down
+		ourShader.setMat4("model", model);
+		complexModel.Draw(ourShader);
+
+		//deathstar
+		model = glm::mat4();
+		model = glm::translate(model, glm::vec3(-700.0, -50.0, -750.0));
+		model = glm::rotate(model, 180.0f * 180 / 3.14159f, glm::vec3(0.0, 0.0, 1.0));
+		model = glm::scale(model, glm::vec3(120.0f, 120.0f, 120.0f));	// it's a bit too big for our scene, so scale it down
+		ourShader.setMat4("model", model);
+		deathstarModel.Draw(ourShader);
+
+
+
+
+
+		/*
 		model = glm::translate(model, glm::vec3(0.5, 0.5, -5.0)); // translate it down so it's at the center of the scene
 		model = glm::rotate(model, (float)glm::radians(90.0f), glm::vec3(-1, 0, 0));
 		//This is to rotate the helicopter but it doesn't work currently
@@ -453,7 +527,7 @@ void Game::MainLoop(void){
 		helicopterShader.setMat4("model", model);
 		deathstarModel.Draw(helicopterShader);
 
-
+		*/
 
 
         // Push buffer drawn in the background onto the display
