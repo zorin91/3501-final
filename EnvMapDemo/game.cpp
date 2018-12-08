@@ -134,8 +134,8 @@ void Game::SetupResources(void){
 	// Load a cube from an obj file
 	
 	//The terrain
-	//filename = std::string(MATERIAL_DIRECTORY) + std::string("/Ter2.obj");
-	//resman_.LoadResource(Mesh, "CubeMesh2", filename.c_str());
+	filename = std::string(MATERIAL_DIRECTORY) + std::string("/Ter2.obj");
+	resman_.LoadResource(Mesh, "Terrain", filename.c_str());
 
 	// Load texture to be applied to the cube
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/test.png");
@@ -163,16 +163,17 @@ void Game::SetupScene(void){
     skybox_ = CreateInstance("CubeInstance1", "CubeMesh2", "SkyboxMaterial");
     skybox_->Scale(glm::vec3(50.0, 20.0, 50.0));
 
-	game::SceneNode *cube = CreateInstance("CubeInstance2", "CubeMesh2", "TexturedMaterial2", "Checker2");
+	//Terrain
+	game::SceneNode *cube = CreateInstance("CubeInstance2", "Terrain", "TexturedMaterial2", "Checker2");
 	// Adjust the instance
 	cube->Scale(glm::vec3(3.0, 2.0, 3.0));
 }
 
 //When testing stuff on your computer just add the path here
-//#define PATHTOSHADER "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo"
-//#define PATHTOMODELS "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final"
-#define PATHTOSHADER "C:/Users/Alex/Documents/GitHub/3501-final/EnvMapDemo"
-#define PATHTOMODELS "C:/Users/Alex/Documents/GitHub/3501-final"
+#define PATHTOSHADER "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo"
+#define PATHTOMODELS "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final"
+//#define PATHTOSHADER "C:/Users/Alex/Documents/GitHub/3501-final/EnvMapDemo"
+//#define PATHTOMODELS "C:/Users/Alex/Documents/GitHub/3501-final"
 
 void Game::MainLoop(void){
 	//Model helicopterTest = Model("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\gameAssets\\helicopter\\uh60.obj");
@@ -211,11 +212,11 @@ void Game::MainLoop(void){
 
 	cout << "Before making the bomb!" << endl;
 
-	Bomb *bomb = new Bomb(resman_.GetResource("CubeMesh2"), resman_.GetResource("TexturedMaterial2"), glm::vec3(0, 1, -1), "bomba", resman_.GetResource("Checker2"));
+	//Bomb *bomb = new Bomb(resman_.GetResource("CubeMesh2"), resman_.GetResource("TexturedMaterial2"), glm::vec3(0, 1, -1), "bomba", resman_.GetResource("Checker2"));
 
 	cout << "After making the bomb!" << endl;
 
-	scene_.AddNode(bomb);
+	//scene_.AddNode(bomb);
 
 	float rotorAngle = 180;
 	float rotateBy = 0.1;
@@ -239,7 +240,10 @@ void Game::MainLoop(void){
 				glm::quat rotation = glm::angleAxis(glm::pi<float>() / 180.0f, glm::vec3(0.0, 1.0, 0.0));
 				node->Rotate(rotation);
 
-				bomb->update(deltaTime);
+				for (int i = 0; i < bombs.size(); i++)
+				{
+					bombs[i]->update(deltaTime);
+				}
 
 				last_time = current_time;
 			}
@@ -551,9 +555,12 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     }
 
     // Stop animation if space bar is pressed
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS){
-        game->animating_ = (game->animating_ == true) ? false : true;
-    }
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+		Bomb *bomb = new Bomb(game->resman_.GetResource("CubeMesh2"), game->resman_.GetResource("TexturedMaterial2"), game->camera_.GetPosition(), "bomba", game->resman_.GetResource("Checker2"));
+		bomb->SetScale(glm::vec3(0.3, 0.3, 0.3));
+		game->bombs.push_back(bomb);
+		game->scene_.AddNode(bomb);
+	}
 }
 
 

@@ -42,7 +42,7 @@ namespace game {
             // Angular momentum of asteroid
             glm::quat angm_;
 			glm::vec3 position;
-			float speed = 0.1;
+			float speed = 0.5;
 			float damage = 100;
 			float radius = 15;
 			float elapsedTime = 0;

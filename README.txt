@@ -7,3 +7,4 @@ CMake to remake the binaries. Once the program is compiled then you will likely
 get an error saying "This program cannot start because assimp-vc140-mt.dll is
 not installed". Once you get that error then locate your binary file
 (either Debug or Release) and place the included dll file inside that folder.
+Keep in mind our game does take a while to load all the models!
