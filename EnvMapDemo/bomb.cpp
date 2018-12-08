@@ -2,10 +2,8 @@
 #include <iostream>
 
 namespace game {
-
-	Bomb::Bomb(const Resource *geometry, const Resource *material, glm::vec3 pos){
+	Bomb::Bomb(const Resource *geometry, const Resource *material, glm::vec3 pos, std::string name, const Resource* texture) : SceneNode(name, geometry, material, texture, NULL, true) {
 		position = pos;
-	
 	}
 
 
@@ -24,6 +22,10 @@ namespace game {
 		angm_ = angm;
 	}
 
+	bool Bomb::isDead()
+	{
+		return dead;
+	}
 
 	void Bomb::update(float deltaTime){
 		//Debug
@@ -32,10 +34,7 @@ namespace game {
 		if (!dead) { //Dont update dead objects, TODO: should delete them
 			position.y -= speed * deltaTime;
 			elapsedTime += deltaTime;
-			if (elapsedTime >= 10.0) {
-				dead = true;
-				//std::cout << "Dead" << std::endl;
-			}
+			SceneNode::SetPosition(Bomb::getPosition());
 			//Debug: print their position
 			//std::cout << "Position.y: " << position.y << std::endl;
 		}
@@ -49,8 +48,13 @@ namespace game {
 		position = pos;
 	}
 
-	void draw() {
-
+	void Bomb::Draw(Camera* camera)
+	{
+		SceneNode::Draw(camera);
+		if (!dead)
+		{
+			
+		}
 	}
             
 } // namespace game

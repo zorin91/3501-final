@@ -18,7 +18,7 @@ namespace game {
     class SceneNode {
 
         public:
-            SceneNode(const std::string name, const Resource *geometry, const Resource *material, const Resource *texture = NULL, const Resource *envmap = NULL);
+            SceneNode(const std::string name, const Resource *geometry, const Resource *material, const Resource *texture = NULL, const Resource *envmap = NULL, bool canDie = false);
 
             // Destructor
             ~SceneNode();
@@ -56,6 +56,10 @@ namespace game {
             GLuint GetElementArrayBuffer(void) const;
             GLsizei GetSize(void) const;
             GLuint GetMaterial(void) const;
+
+			bool canDie_;
+			bool isDead_;
+			float timeAlive;
 
         private:
             std::string name_; // Name of the scene node

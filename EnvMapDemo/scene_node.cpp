@@ -9,10 +9,13 @@
 
 namespace game {
 
-SceneNode::SceneNode(const std::string name, const Resource *geometry, const Resource *material, const Resource *texture, const Resource *envmap){
+SceneNode::SceneNode(const std::string name, const Resource *geometry, const Resource *material, const Resource *texture, const Resource *envmap, bool canDie){
 
     // Set name of scene node
     name_ = name;
+	canDie_ = canDie;
+	isDead_ = false;
+	timeAlive = 0.0f;
 
     // Set geometry
     if (geometry->GetType() == PointSet){
@@ -162,48 +165,59 @@ GLuint SceneNode::GetMaterial(void) const {
 
 
 void SceneNode::Draw(Camera *camera){
+	if (!(isDead_ && canDie_))
+	{
+		std::cout << this->GetName() + " is alive!" << std::endl;
 
-    // Select blending or not
-    if (blending_){
-        // Disable z-buffer
-        glDisable(GL_DEPTH_TEST);
+		//std::cout << "Drawing: " << this->GetName() << std::endl;
 
-        // Enable blending
-        glEnable(GL_BLEND);
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Simpler form
-        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
-    } else {
-        // Enable z-buffer
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
-    }
+		// Select blending or not
+		if (blending_) {
+			// Disable z-buffer
+			glDisable(GL_DEPTH_TEST);
 
-    // Select proper material (shader program)
-    glUseProgram(material_);
+			// Enable blending
+			glEnable(GL_BLEND);
+			//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Simpler form
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
+		}
+		else {
+			// Enable z-buffer
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LESS);
+		}
 
-    // Set geometry to draw
-    glBindBuffer(GL_ARRAY_BUFFER, array_buffer_);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_array_buffer_);
+		// Select proper material (shader program)
+		glUseProgram(material_);
 
-    // Set globals for camera
-    camera->SetupShader(material_);
+		// Set geometry to draw
+		glBindBuffer(GL_ARRAY_BUFFER, array_buffer_);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_array_buffer_);
 
-    // Set world matrix and other shader input variables
-    SetupShader(material_);
+		// Set globals for camera
+		camera->SetupShader(material_);
 
-    // Draw geometry
-    if (mode_ == GL_POINTS){
-        glDrawArrays(mode_, 0, size_);
-    } else {
-        glDrawElements(mode_, size_, GL_UNSIGNED_INT, 0);
-    }
+		// Set world matrix and other shader input variables
+		SetupShader(material_);
+
+		// Draw geometry
+		if (mode_ == GL_POINTS) {
+			glDrawArrays(mode_, 0, size_);
+		}
+		else {
+			glDrawElements(mode_, size_, GL_UNSIGNED_INT, 0);
+		}
+	}
 }
 
 
 void SceneNode::Update(void){
-
-    // Do nothing for this generic type of scene node
+	this->timeAlive += 0.016;
+	if (timeAlive > 10.0)
+	{
+		isDead_ = true;
+	}
 }
 
 

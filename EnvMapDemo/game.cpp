@@ -132,8 +132,10 @@ void Game::SetupResources(void){
 	resman_.LoadResource(Material, "SkyboxMaterial", filename.c_str());
 
 	// Load a cube from an obj file
-	filename = std::string(MATERIAL_DIRECTORY) + std::string("/Ter2.obj");
-	resman_.LoadResource(Mesh, "CubeMesh2", filename.c_str());
+	
+	//The terrain
+	//filename = std::string(MATERIAL_DIRECTORY) + std::string("/Ter2.obj");
+	//resman_.LoadResource(Mesh, "CubeMesh2", filename.c_str());
 
 	// Load texture to be applied to the cube
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/test.png");
@@ -142,12 +144,12 @@ void Game::SetupResources(void){
 	// Load material to be applied to the cube
 	filename = std::string(MATERIAL_DIRECTORY) + std::string("/textured_material");
 	resman_.LoadResource(Material, "TexturedMaterial2", filename.c_str());
+	
 }
 
 
 
 void Game::SetupScene(void){
-
     // Set background color for the scene
     scene_.SetBackgroundColor(viewport_background_color_g);
 
@@ -161,24 +163,22 @@ void Game::SetupScene(void){
     skybox_ = CreateInstance("CubeInstance1", "CubeMesh", "SkyboxMaterial");
     skybox_->Scale(glm::vec3(50.0, 20.0, 50.0));
 	
-	game::SceneNode *cube = CreateInstance("CubeInstance2", "CubeMesh2", "TexturedMaterial2", "Checker2");
+	//The mountain
+	//game::SceneNode *cube = CreateInstance("CubeInstance2", "CubeMesh2", "TexturedMaterial2", "Checker2");
 	// Adjust the instance
-	cube->Scale(glm::vec3(3.0, 2.0, 3.0));
-
-	
-	
-
-
-
+	//cube->Scale(glm::vec3(3.0, 2.0, 3.0));
 }
 
+//When testing stuff on your computer just add the path here
+#define PATHTOSHADER ""
+#define PATHTOMODELS ""
 
 void Game::MainLoop(void){
 
 	//Model helicopterTest = Model("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\gameAssets\\helicopter\\uh60.obj");
-	Shader helicopterShader = Shader("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\EnvMapDemo\\helicopterfrag.fs", "C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\EnvMapDemo\\helicopterfrag.vs");
-	Model enemyhelicopter = Model("C:/Users/nicho/Documents/3501 Final/3501-final/gameAssets/testheli/Mi-28N_Havoc_BF3/havoc.obj");
-	Model tank = Model("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\gameAssets\\tank\\test.obj");
+	//Shader helicopterShader = Shader("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\EnvMapDemo\\helicopterfrag.fs", "C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\EnvMapDemo\\helicopterfrag.vs");
+	//Model enemyhelicopter = Model("C:/Users/nicho/Documents/3501 Final/3501-final/gameAssets/testheli/Mi-28N_Havoc_BF3/havoc.obj");
+	//Model tank = Model("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\gameAssets\\tank\\test.obj");
 	//Model deathstar = Model("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\gameAssets\\deathstar\\test.obj");
 
 	
@@ -198,8 +198,11 @@ void Game::MainLoop(void){
 
 
 	//Test for weapon systems
-	Bomb *bomb = new Bomb(resman_.GetResource("CubeMesh2"), resman_.GetResource("TexturedMaterial2"), glm::vec3(0, 0, 0));
-	Bullet * bullet = new Bullet(resman_.GetResource("CubeMesh2"), resman_.GetResource("TexturedMaterial2"), glm::vec3(0, 0, 0), camera_.GetForward());
+	Bomb *bomb = new Bomb(resman_.GetResource("CubeMesh"), resman_.GetResource("TexturedMaterial2"), glm::vec3(0, 1, -1), "bomba", resman_.GetResource("Checker2"));
+
+	scene_.AddNode(bomb);
+
+	//Bullet * bullet = new Bullet(resman_.GetResource("CubeMesh2"), resman_.GetResource("TexturedMaterial2"), glm::vec3(0, 0, 0), camera_.GetForward());
 
     // Loop while the user did not close the window
 	while (!glfwWindowShouldClose(window_)) {
@@ -209,7 +212,8 @@ void Game::MainLoop(void){
 			double current_time = glfwGetTime();
 			if ((current_time - last_time) > 0.01) {
 				deltaTime = current_time - last_time;
-				//scene_.Update();
+				//std::cout << deltaTime << std::endl;
+				scene_.Update();
 
 				// Animate the sphere
 				SceneNode *node = scene_.GetNode("TorusInstance1");
@@ -217,7 +221,6 @@ void Game::MainLoop(void){
 				node->Rotate(rotation);
 
 				bomb->update(deltaTime);
-				bullet->update(deltaTime);
 
 				last_time = current_time;
 			}
@@ -380,13 +383,14 @@ void Game::MainLoop(void){
 		this->skybox_->Translate(currentFwd * acceleration);
 
         // Draw the scene
+		//bomb->Bomb::Draw(&camera_);
         scene_.Draw(&camera_);
 
-		helicopterShader.use();
+		//helicopterShader.use();
 
 		// view/projection transformations
-		helicopterShader.setMat4("projection", camera_.getProjection());
-		helicopterShader.setMat4("view", camera_.getView());
+		//helicopterShader.setMat4("projection", camera_.getProjection());
+		//helicopterShader.setMat4("view", camera_.getView());
 
 		// render the loaded model
 		glm::mat4 model;
@@ -403,12 +407,12 @@ void Game::MainLoop(void){
 		//model = glm::rotate(model, 1.0f, roll);
 		//model = glm::rotate(model, 1.0f, pitch);
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
-		helicopterShader.setMat4("model", model);
-		enemyhelicopter.Draw(helicopterShader);
+		//helicopterShader.setMat4("model", model);
+		//enemyhelicopter.Draw(helicopterShader);
 
 		model = glm::translate(model, glm::vec3(-2.5, 0.5, -5.0)); // translate it down so it's at the center of the scene
-		helicopterShader.setMat4("model", model);
-		tank.Draw(helicopterShader);
+		//helicopterShader.setMat4("model", model);
+		//tank.Draw(helicopterShader);
 
 
 		//model = glm::mat4();
