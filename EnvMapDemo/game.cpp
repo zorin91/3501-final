@@ -15,9 +15,9 @@ namespace game {
 
 // Main window settings
 const std::string window_title_g = "Demo";
-const unsigned int window_width_g = 1920;
-const unsigned int window_height_g = 1080;
-const bool window_full_screen_g = true;
+const unsigned int window_width_g = 640;
+const unsigned int window_height_g = 480;
+const bool window_full_screen_g = false;
 
 // Viewport and camera settings
 float camera_near_clip_distance_g = 0.01;
@@ -117,7 +117,7 @@ void Game::SetupResources(void){
     resman_.CreateTorus("TorusMesh");
 
     // Create a cube for the skybox
-    resman_.CreateCube("CubeMesh");
+    resman_.CreateCube("CubeMesh2");
 
     // Load material to be applied to torus
     std::string filename = std::string(MATERIAL_DIRECTORY) + std::string("/envmap");
@@ -160,21 +160,17 @@ void Game::SetupScene(void){
     torus->Translate(glm::vec3(0.5, 0.5, -10.0));
 
     // Create skybox
-    skybox_ = CreateInstance("CubeInstance1", "CubeMesh", "SkyboxMaterial");
+    skybox_ = CreateInstance("CubeInstance1", "CubeMesh2", "SkyboxMaterial");
     skybox_->Scale(glm::vec3(50.0, 20.0, 50.0));
 
 	game::SceneNode *cube = CreateInstance("CubeInstance2", "CubeMesh2", "TexturedMaterial2", "Checker2");
 	// Adjust the instance
 	cube->Scale(glm::vec3(3.0, 2.0, 3.0));
-
-	// Create the terrain
-	game::SceneNode *cube = CreateInstance("CubeInstance2", "CubeMesh2", "TexturedMaterial", "Checker");
-	cube->Scale(glm::vec3(3.0, 3.0, 3.0));
 }
 
 //When testing stuff on your computer just add the path here
-#define PATHTOSHADER ""
-#define PATHTOMODELS ""
+#define PATHTOSHADER "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo"
+#define PATHTOMODELS "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final"
 
 void Game::MainLoop(void){
 	//Model helicopterTest = Model("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\gameAssets\\helicopter\\uh60.obj");
@@ -183,14 +179,16 @@ void Game::MainLoop(void){
 	//Model tank = Model("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\gameAssets\\tank\\test.obj");
 	//Model deathstar = Model("C:\\Users\\nicho\\Documents\\University Docs\\3rd Year\\[F] Comp 3501 Game Dev III\\3501-final\\gameAssets\\deathstar\\test.obj");
 
-    Model helicopterTest = Model("C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/gameAssets/helicopter/uh60.obj");
-    Shader helicopterShader = Shader("C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo/helicopterfrag.vs", "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo/helicopterfrag.fs");
-    Model treeModel("C:/Users/Alex/Desktop/3501finalmodels/halo/Ice Fields/Scenery/test.obj");
-    Model tankModel("C:/Users/Alex/Desktop/3501finalmodels/crazytank/tank/test.obj");
-    Model enemyHeliModel("C:/Users/Alex/Desktop/3501finalmodels/testheli/Mi-28N_Havoc_BF3/test.obj");
-    Model towerModel("C:/Users/Alex/Desktop/3501finalmodels/watchtower/obj/wooden watch tower2.obj");
-    Model complexModel("C:/Users/Alex/Desktop/3501finalmodels/complex/Runtime/Libraries/Character/Herminio Nieves/Nubian Complex/nubian complex.obj");
-    Model deathstarModel("C:/Users/Alex/Desktop/3501finalmodels/deathstar/test.obj");
+	//Work the macro magic
+	
+    Model helicopterTest = Model(PATHTOMODELS "/gameAssets/helicopter/uh60.obj");
+    Shader helicopterShader = Shader(PATHTOSHADER "/helicopterfrag.vs", PATHTOSHADER "/helicopterfrag.fs");
+    Model tankModel(PATHTOMODELS "/gameAssets/tank/test.obj");
+    Model enemyHeliModel(PATHTOMODELS "/gameAssets/testheli/Mi-28N_Havoc_BF3/test.obj");
+    Model towerModel(PATHTOMODELS "/gameAssets/watchtower/obj/wooden watch tower2.obj");
+    Model complexModel(PATHTOMODELS "/gameAssets/Nubian Complex/nubian complex.obj");
+    Model deathstarModel(PATHTOMODELS "/gameAssets/deathstar/test.obj");
+	
 
 	float rot_factor(glm::pi<float>() / 180);
 	float rotation = 0.0f;
@@ -207,7 +205,12 @@ void Game::MainLoop(void){
 
 
 	//Test for weapon systems
-	Bomb *bomb = new Bomb(resman_.GetResource("CubeMesh"), resman_.GetResource("TexturedMaterial2"), glm::vec3(0, 1, -1), "bomba", resman_.GetResource("Checker2"));
+
+	cout << "Before making the bomb!" << endl;
+
+	Bomb *bomb = new Bomb(resman_.GetResource("CubeMesh2"), resman_.GetResource("TexturedMaterial2"), glm::vec3(0, 1, -1), "bomba", resman_.GetResource("Checker2"));
+
+	cout << "After making the bomb!" << endl;
 
 	scene_.AddNode(bomb);
 
@@ -215,6 +218,7 @@ void Game::MainLoop(void){
 
     // Loop while the user did not close the window
 	while (!glfwWindowShouldClose(window_)) {
+		cout << "In the loop!" << endl;
 		// Animate the scene
 		if (animating_) {
 			static double last_time = 0;
@@ -395,11 +399,11 @@ void Game::MainLoop(void){
 		//bomb->Bomb::Draw(&camera_);
         scene_.Draw(&camera_);
 
-		//helicopterShader.use();
+		helicopterShader.use();
 
 		// view/projection transformations
-		//helicopterShader.setMat4("projection", camera_.getProjection());
-		//helicopterShader.setMat4("view", camera_.getView());
+		helicopterShader.setMat4("projection", camera_.getProjection());
+		helicopterShader.setMat4("view", camera_.getView());
 
 		// render the loaded model
 		glm::mat4 model;
@@ -416,23 +420,23 @@ void Game::MainLoop(void){
 		//model = glm::rotate(model, 1.0f, roll);
 		//model = glm::rotate(model, 1.0f, pitch);
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
-		//helicopterShader.setMat4("model", model);
+		helicopterShader.setMat4("model", model);
 		//enemyhelicopter.Draw(helicopterShader);
 
 		model = glm::translate(model, glm::vec3(-2.5, 0.5, -5.0)); // translate it down so it's at the center of the scene
-		//helicopterShader.setMat4("model", model);
+		helicopterShader.setMat4("model", model);
 		//tank.Draw(helicopterShader);
 
 
 		//model = glm::mat4();
-		///helicopterShader.setMat4("model", model);
-		//helicopterTest.Draw(helicopterShader);
+		helicopterShader.setMat4("model", model);
+		helicopterTest.Draw(helicopterShader);
 		//enemyhelicopter.Draw(helicopterShader);
 
 		model = glm::mat4();
 		model = glm::scale(model, glm::vec3(2.2f, 2.2f, 2.2f));	// it's a bit too big for our scene, so scale it down
 
-		treeModel.Draw(helicopterShader);
+		//treeModel.Draw(helicopterShader);
 		tankModel.Draw(helicopterShader);
 		enemyHeliModel.Draw(helicopterShader);
 		towerModel.Draw(helicopterShader);

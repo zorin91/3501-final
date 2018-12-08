@@ -43,9 +43,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd hull.gif
-map_Bump hull.gif
-map_Ka hull.gif
+map_Kd /hull.gif
+map_Bump /hull.gif
+map_Ka /hull.gif
 
 newmtl Laser_outter
 Ns 49.019608
@@ -102,9 +102,9 @@ Ni 1.500000
 d 1.000000
 illum 2
 map_Kd Map__12_Mix.tga
-map_Bump lights2.gif
+map_Bump /lights2.gif
 map_Ka Map__12_Mix.tga
-map_Ke lights2.gif
+map_Ke /lights2.gif
 map_d construction_Mix.tga
 
 newmtl construction_reinforce
