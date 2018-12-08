@@ -15,9 +15,9 @@ namespace game {
 
 // Main window settings
 const std::string window_title_g = "Demo";
-const unsigned int window_width_g = 640;
-const unsigned int window_height_g = 480;
-const bool window_full_screen_g = false;
+const unsigned int window_width_g = 1920;
+const unsigned int window_height_g = 1080;
+const bool window_full_screen_g = true;
 
 // Viewport and camera settings
 float camera_near_clip_distance_g = 0.01;
@@ -130,6 +130,18 @@ void Game::SetupResources(void){
     // Load material to be applied to skybox
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/skybox");
 	resman_.LoadResource(Material, "SkyboxMaterial", filename.c_str());
+
+	// Load a cube from an obj file
+	filename = std::string(MATERIAL_DIRECTORY) + std::string("/Ter2.obj");
+	resman_.LoadResource(Mesh, "CubeMesh2", filename.c_str());
+
+	// Load texture to be applied to the cube
+	filename = std::string(MATERIAL_DIRECTORY) + std::string("/test.png");
+	resman_.LoadResource(Texture, "Checker", filename.c_str());
+
+	// Load material to be applied to the cube
+	filename = std::string(MATERIAL_DIRECTORY) + std::string("/textured_material");
+	resman_.LoadResource(Material, "TexturedMaterial", filename.c_str());
 }
 
 
@@ -148,6 +160,10 @@ void Game::SetupScene(void){
     skybox_ = CreateInstance("CubeInstance1", "CubeMesh", "SkyboxMaterial");
     skybox_->Scale(glm::vec3(50.0, 50.0, 50.0));
 
+
+	// Create the terrain
+	game::SceneNode *cube = CreateInstance("CubeInstance2", "CubeMesh2", "TexturedMaterial", "Checker");
+	cube->Scale(glm::vec3(3.0, 3.0, 3.0));
 }
 
 
@@ -155,6 +171,12 @@ void Game::MainLoop(void){
 
 	Model helicopterTest = Model("C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/gameAssets/helicopter/uh60.obj");
 	Shader helicopterShader = Shader("C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo/helicopterfrag.vs", "C:/Users/Jacob DiDiodato/Documents/3501 Final/3501-final/EnvMapDemo/helicopterfrag.fs");
+	Model treeModel("C:/Users/Alex/Desktop/3501finalmodels/halo/Ice Fields/Scenery/test.obj");
+	Model tankModel("C:/Users/Alex/Desktop/3501finalmodels/crazytank/tank/test.obj");
+	Model enemyHeliModel("C:/Users/Alex/Desktop/3501finalmodels/testheli/Mi-28N_Havoc_BF3/test.obj");
+	Model towerModel("C:/Users/Alex/Desktop/3501finalmodels/watchtower/obj/wooden watch tower2.obj");
+	Model complexModel("C:/Users/Alex/Desktop/3501finalmodels/complex/Runtime/Libraries/Character/Herminio Nieves/Nubian Complex/nubian complex.obj");
+	Model deathstarModel("C:/Users/Alex/Desktop/3501finalmodels/deathstar/test.obj");
 
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
@@ -166,9 +188,9 @@ void Game::MainLoop(void){
                 //scene_.Update();
 
                 // Animate the sphere
-                SceneNode *node = scene_.GetNode("TorusInstance1");
-                glm::quat rotation = glm::angleAxis(glm::pi<float>()/180.0f, glm::vec3(0.0, 1.0, 0.0));
-                node->Rotate(rotation);
+               // SceneNode *node = scene_.GetNode("TorusInstance1");
+               // glm::quat rotation = glm::angleAxis(glm::pi<float>()/180.0f, glm::vec3(0.0, 1.0, 0.0));
+               // node->Rotate(rotation);
 
                 last_time = current_time;
             }
@@ -214,6 +236,29 @@ void Game::MainLoop(void){
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
 		helicopterShader.setMat4("model", model);
 		helicopterTest.Draw(helicopterShader);
+
+		model = glm::mat4();
+		model = glm::scale(model, glm::vec3(2.2f, 2.2f, 2.2f));	// it's a bit too big for our scene, so scale it down
+		
+		treeModel.Draw(helicopterShader);
+		tankModel.Draw(helicopterShader);
+		enemyHeliModel.Draw(helicopterShader);
+		towerModel.Draw(helicopterShader);
+
+		model = glm::mat4();
+		model = glm::scale(model, glm::vec3(15.0f, 15.0f, 15.0f));	// it's a bit too big for our scene, so scale it down
+		helicopterShader.setMat4("model", model);
+		complexModel.Draw(helicopterShader);
+
+		model = glm::mat4();
+		model = glm::translate(model, glm::vec3(-400.0, 0.0, -250.0));
+		model = glm::rotate(model, 180.0f * 180 / 3.14159f, glm::vec3(0.0, 0.0, 1.0));
+		model = glm::scale(model, glm::vec3(80.0f, 80.0f, 80.0f));	// it's a bit too big for our scene, so scale it down
+		helicopterShader.setMat4("model", model);
+		deathstarModel.Draw(helicopterShader);
+
+
+
 
         // Push buffer drawn in the background onto the display
         glfwSwapBuffers(window_);
